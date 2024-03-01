@@ -1,0 +1,63 @@
+create database CompanyDB
+
+use CompanyDB
+
+drop database CompanyDB
+
+create table Departments(
+	departmentID char(5) primary key check(departmentID like 'DP[0-9][0-9][0-9]'),
+	departmentName varchar(50) not null,
+)
+
+create table Staff(
+	staffID char(5) primary key check(staffID like 'ST[0-9][0-9][0-9]'),
+	staffName varchar(25) not null,
+	staffAge int not null,
+	departmentID char(5),
+	foreign key (departmentID) references Departments(departmentID)
+)
+
+select * from Departments
+select * from Staff
+
+declare @i int = 0;
+while @i < 1
+BEGIN 
+	select * from Staff
+END
+
+insert into Departments values
+('DP001', 'Business'),
+('DP002', 'Sales'),
+('DP003', 'Marketing')
+
+
+insert into Staff values
+('ST001', 'Mail', 19, 'DP001'),
+('ST002', 'Adit', 16, 'DP002'),
+('ST003', 'Thomas', 18, 'DP002')
+
+
+-- Menggabungkan table yg berhubungan (foreign key) menjadi 1
+select * from Staff join Departments on
+Staff.departmentID = Departments.departmentID
+
+update Staff
+set departmentID = 'DP003'
+where staffID = 'ST003'
+
+delete from Staff
+where staffID = 'ST003'
+
+-- urutan (asc/desc)
+select * from Staff
+order by staffAge desc -- mengurut dari yg lebih besar
+
+-- melakukan sebuah aksi yg sifatnya sementara, misal delete, datanya bisa balik kalau di rollback
+begin transaction
+delete from Staff
+where staffAge = 16
+
+-- undo/membalikan suatu transaction
+rollback
+select * from Staff
